@@ -1,86 +1,64 @@
-# OSRS Goals Service
+# OSRS Goal Tracker Orchestration Service
 
-A Java service for tracking Old School RuneScape player goals and progress.
+This repository contains the event models and orchestration service for the OSRS Goal Tracker system.
 
-## Overview
+## Using Event Models in Your Project
 
-This service provides a set of AWS Lambda functions for managing OSRS player goals and tracking progress. It follows a Layered Service Architecture (LSA) pattern and is built with Java 21.
+To use the event models in your project, add the following dependency:
 
-## Documentation
+### Gradle
+```groovy
+repositories {
+    maven { url "https://jitpack.io" }
+}
 
-- [Project Structure and Architecture](docs/ARCHITECTURE.md) - Detailed overview of the project's layered architecture and development guidelines
-- [Handler Interfaces](docs/HANDLERS.md) - Lambda function entry points, inputs, and outputs
-- [Service Interfaces](docs/SERVICES.md) - Service layer interfaces and functionality
-- [Data Models](docs/MODELS.md) - Core data models and their relationships
-
-## Architecture
-
-### Domain Layer
-The service is organized into domain-specific modules (e.g., User, Character, Goal) that handle core business logic.
-
-### Orchestration Layer
-The orchestration layer manages cross-domain interactions through events. It includes:
-- Event models (e.g., GoalCreationEvent)
-- Event handlers
-- Event-driven workflows
-
-## Requirements
-
-- JDK 21
-- Gradle 8.x
-
-## Quick Start
-
-1. Install dependencies:
-```bash
-./gradlew build
+dependencies {
+    implementation "com.github.osrsGoalsTracker:orchestrationService:1.1.0"  // Use latest version
+}
 ```
 
-2. Run tests:
-```bash
-./gradlew test
+### Maven
+```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+
+<dependencies>
+    <dependency>
+        <groupId>com.github.osrsGoalsTracker</groupId>
+        <artifactId>orchestrationService</artifactId>
+        <version>1.1.0</version>  <!-- Use latest version -->
+    </dependency>
+</dependencies>
 ```
 
-3. Build all Lambda handlers:
-```bash
-./gradlew buildAllHandlers
+## Available Models
+
+### GoalCreationRequestEvent
+
+This event is used to request the creation of a new goal. Example usage:
+
+```java
+import com.osrsGoalTracker.orchestration.events.GoalCreationRequestEvent;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
+GoalCreationRequestEvent event = GoalCreationRequestEvent.builder()
+    .userId("user123")
+    .characterName("Zezima")
+    .targetAttribute("WOODCUTTING")
+    .targetType("SKILL")
+    .targetValue(99)
+    .currentValue(1)
+    .targetDate(Instant.now().plus(30, ChronoUnit.DAYS))
+    .notificationChannelType("DISCORD")
+    .frequency("DAILY")
+    .build();
 ```
 
-## Building Individual Handlers
+## Versioning
 
-Build specific Lambda handlers:
-```bash
-# Build GetPlayerStats handler
-./gradlew buildGetPlayerStatsHandler
-
-# Build GetUser handler
-./gradlew buildGetUserHandler
-
-# Build CreateUser handler
-./gradlew buildCreateUserHandler
-
-# Build AddPlayerToUser handler
-./gradlew buildAddPlayerToUserHandler
-```
-
-Each handler will be built into its own JAR file in `build/libs/`.
-
-## Dependencies
-
-- AWS Lambda Core - Lambda function support
-- AWS Lambda Events - Event handling
-- AWS DynamoDB - Database operations
-- Google Guice - Dependency injection
-- Jackson - JSON serialization
-- Log4j2 - Logging
-- Lombok - Boilerplate reduction
-- JUnit 5 - Testing
-- Mockito - Mocking for tests
-
-## Infrastructure
-
-The service is deployed using AWS CDK with the following components:
-
-- API Gateway for REST endpoints
-- Lambda functions for business logic
-- DynamoDB tables for data storage 
+We use semantic versioning (MAJOR.MINOR.PATCH). Check the [releases page](https://github.com/osrsGoalsTracker/orchestrationService/releases) for the latest version.

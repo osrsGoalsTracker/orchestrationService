@@ -6,15 +6,15 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
 
 /**
  * Event published when a goal is requested to be created.
  * Contains all necessary information to create a goal and set its initial
  * progress.
  */
-@Value
-@Builder(setterPrefix = "")
+@Data
+@Builder
 @JsonDeserialize(builder = GoalCreationRequestEvent.GoalCreationRequestEventBuilder.class)
 public class GoalCreationRequestEvent {
     /**
