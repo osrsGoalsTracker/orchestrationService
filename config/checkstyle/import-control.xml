@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<!DOCTYPE import-control PUBLIC
+    "-//Checkstyle//DTD ImportControl Configuration 1.4//EN"
+    "https://checkstyle.org/dtds/import_control_1_4.dtd">
+
+<import-control pkg="com.osrsGoalTracker">
+    <!-- Allow all external dependencies -->
+    <allow pkg="com.google"/>
+    <allow pkg="lombok"/>
+    <allow pkg="org"/>
+    <allow pkg="javax"/>
+    <allow pkg="java"/>
+    <allow pkg="com.amazonaws"/>
+    <allow pkg="software.amazon"/>
+    <allow pkg="com.fasterxml"/>
+    <allow pkg="com.osrsGoalTracker"/>
+    <allow pkg="com.osrshiscores"/>
+
+    <!-- orchestration Domain -->
+    <subpackage name="orchestration">
+        <!-- Handler Layer -->
+        <subpackage name="handler">
+            <allow pkg="com.osrsGoalTracker.orchestration.handler"/>
+            <allow pkg="com.osrsGoalTracker.orchestration.service"/>
+            <allow pkg="com.osrsGoalTracker.orchestration.model"/>
+            <allow pkg="com.osrsGoalTracker.orchestration.di"/>
+            <disallow pkg="com.osrsGoalTracker.orchestration.repository"/>
+            <disallow pkg="com.osrsGoalTracker.orchestration.external"/>
+        </subpackage>
+
+        <!-- Service Layer -->
+        <subpackage name="service">
+            <allow pkg="com.osrsGoalTracker.orchestration.service"/>
+            <allow pkg="com.osrsGoalTracker.orchestration.repository"/>
+            <allow pkg="com.osrsGoalTracker.orchestration.model"/>
+            <allow pkg="com.osrsGoalTracker.orchestration.external"/>
+            <disallow pkg="com.osrsGoalTracker.orchestration.handler"/>
+        </subpackage>
+
+        <!-- Repository Layer -->
+        <subpackage name="repository">
+            <allow pkg="com.osrsGoalTracker.orchestration.repository"/>
+            <allow pkg="com.osrsGoalTracker.orchestration.model"/>
+            <disallow pkg="com.osrsGoalTracker.orchestration.handler"/>
+            <disallow pkg="com.osrsGoalTracker.orchestration.service"/>
+            <disallow pkg="com.osrsGoalTracker.orchestration.external"/>
+        </subpackage>
+
+        <!-- Model Layer -->
+        <subpackage name="model">
+            <allow pkg="com.osrsGoalTracker.orchestration.model"/>
+            <disallow pkg="com.osrsGoalTracker.orchestration.handler"/>
+            <disallow pkg="com.osrsGoalTracker.orchestration.service"/>
+            <disallow pkg="com.osrsGoalTracker.orchestration.repository"/>
+            <disallow pkg="com.osrsGoalTracker.orchestration.external"/>
+        </subpackage>
+
+        <!-- External Layer -->
+        <subpackage name="external">
+            <allow pkg="com.osrsGoalTracker.orchestration.external"/>
+            <allow pkg="com.osrsGoalTracker.orchestration.model"/>
+            <disallow pkg="com.osrsGoalTracker.orchestration.handler"/>
+            <disallow pkg="com.osrsGoalTracker.orchestration.service"/>
+            <disallow pkg="com.osrsGoalTracker.orchestration.repository"/>
+        </subpackage>
+
+        <!-- DI Layer -->
+        <subpackage name="di">
+            <allow pkg="com.osrsGoalTracker.orchestration"/>
+        </subpackage>
+    </subpackage>
+</import-control> 
