@@ -83,10 +83,10 @@ public class SomeHandler implements RequestHandler<APIGatewayProxyRequestEvent, 
 
 ### Orchestration Handlers
 
-#### GoalCreationRequestHandler
+#### GoalCreationRequestEventProducerHandler
 - **Path**: `POST /users/{userId}/characters/{name}/goals`
-- **Package**: `com.osrsGoalTracker.orchestration.handlers.GoalCreationRequestHandler`
-- **Request**: `GoalCreationRequestBody`
+- **Package**: `com.osrsGoalTracker.orchestration.handler.GoalCreationRequestEventProducerHandler`
+- **Request**: `GoalCreationRequestEventProducerRequestBody`
 - **Response**: `APIGatewayProxyResponseEvent` with success message
 - **Example Request**:
 ```json

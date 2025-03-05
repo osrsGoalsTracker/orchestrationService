@@ -1,8 +1,8 @@
-package com.osrsGoalTracker.orchestration.handlers;
+package com.osrsGoalTracker.orchestration.handler;
 
 import com.amazonaws.services.lambda.runtime.Context;
-import com.osrsGoalTracker.orchestration.handlers.model.ApiGatewayRequest;
-import com.osrsGoalTracker.orchestration.handlers.model.ApiGatewayResponse;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -15,11 +15,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
- * Tests for the GoalCreationRequestHandler.
+ * Tests for the GoalCreationRequestEventProducerHandler.
  */
-class GoalCreationRequestHandlerTest {
+class GoalCreationRequestEventProducerHandlerTest {
 
-    private GoalCreationRequestHandler handler;
+    private GoalCreationRequestEventProducerHandler handler;
 
     @Mock
     private Context context;
@@ -27,7 +27,7 @@ class GoalCreationRequestHandlerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        handler = new GoalCreationRequestHandler();
+        handler = new GoalCreationRequestEventProducerHandler();
     }
 
     @Test
@@ -39,13 +39,12 @@ class GoalCreationRequestHandlerTest {
 
         String body = "{\"targetAttribute\":\"WOODCUTTING\",\"targetType\":\"SKILL\",\"targetValue\":99,\"currentValue\":1,\"targetDate\":\"2024-12-31T23:59:59Z\",\"notificationChannelType\":\"EMAIL\",\"frequency\":\"DAILY\"}";
 
-        ApiGatewayRequest request = ApiGatewayRequest.builder()
-                .pathParameters(pathParameters)
-                .body(body)
-                .build();
+        APIGatewayProxyRequestEvent request = new APIGatewayProxyRequestEvent()
+                .withPathParameters(pathParameters)
+                .withBody(body);
 
         // When
-        ApiGatewayResponse response = handler.handleRequest(request, context);
+        APIGatewayProxyResponseEvent response = handler.handleRequest(request, context);
 
         // Then
         assertNotNull(response);
@@ -55,12 +54,12 @@ class GoalCreationRequestHandlerTest {
     @Test
     void testHandleRequest_withMissingPathParameters_returnsErrorResponse() {
         // Given
-        ApiGatewayRequest request = ApiGatewayRequest.builder()
-                .body("{\"targetAttribute\":\"WOODCUTTING\",\"targetType\":\"SKILL\",\"targetValue\":99,\"currentValue\":1,\"targetDate\":\"2024-12-31T23:59:59Z\",\"notificationChannelType\":\"EMAIL\",\"frequency\":\"DAILY\"}")
-                .build();
+        APIGatewayProxyRequestEvent request = new APIGatewayProxyRequestEvent()
+                .withBody(
+                        "{\"targetAttribute\":\"WOODCUTTING\",\"targetType\":\"SKILL\",\"targetValue\":99,\"currentValue\":1,\"targetDate\":\"2024-12-31T23:59:59Z\",\"notificationChannelType\":\"EMAIL\",\"frequency\":\"DAILY\"}");
 
         // When
-        ApiGatewayResponse response = handler.handleRequest(request, context);
+        APIGatewayProxyResponseEvent response = handler.handleRequest(request, context);
 
         // Then
         assertNotNull(response);
@@ -73,13 +72,13 @@ class GoalCreationRequestHandlerTest {
         Map<String, String> pathParameters = new HashMap<>();
         pathParameters.put("name", "characterName");
 
-        ApiGatewayRequest request = ApiGatewayRequest.builder()
-                .pathParameters(pathParameters)
-                .body("{\"targetAttribute\":\"WOODCUTTING\",\"targetType\":\"SKILL\",\"targetValue\":99,\"currentValue\":1,\"targetDate\":\"2024-12-31T23:59:59Z\",\"notificationChannelType\":\"EMAIL\",\"frequency\":\"DAILY\"}")
-                .build();
+        APIGatewayProxyRequestEvent request = new APIGatewayProxyRequestEvent()
+                .withPathParameters(pathParameters)
+                .withBody(
+                        "{\"targetAttribute\":\"WOODCUTTING\",\"targetType\":\"SKILL\",\"targetValue\":99,\"currentValue\":1,\"targetDate\":\"2024-12-31T23:59:59Z\",\"notificationChannelType\":\"EMAIL\",\"frequency\":\"DAILY\"}");
 
         // When
-        ApiGatewayResponse response = handler.handleRequest(request, context);
+        APIGatewayProxyResponseEvent response = handler.handleRequest(request, context);
 
         // Then
         assertNotNull(response);
@@ -92,13 +91,13 @@ class GoalCreationRequestHandlerTest {
         Map<String, String> pathParameters = new HashMap<>();
         pathParameters.put("userId", "user123");
 
-        ApiGatewayRequest request = ApiGatewayRequest.builder()
-                .pathParameters(pathParameters)
-                .body("{\"targetAttribute\":\"WOODCUTTING\",\"targetType\":\"SKILL\",\"targetValue\":99,\"currentValue\":1,\"targetDate\":\"2024-12-31T23:59:59Z\",\"notificationChannelType\":\"EMAIL\",\"frequency\":\"DAILY\"}")
-                .build();
+        APIGatewayProxyRequestEvent request = new APIGatewayProxyRequestEvent()
+                .withPathParameters(pathParameters)
+                .withBody(
+                        "{\"targetAttribute\":\"WOODCUTTING\",\"targetType\":\"SKILL\",\"targetValue\":99,\"currentValue\":1,\"targetDate\":\"2024-12-31T23:59:59Z\",\"notificationChannelType\":\"EMAIL\",\"frequency\":\"DAILY\"}");
 
         // When
-        ApiGatewayResponse response = handler.handleRequest(request, context);
+        APIGatewayProxyResponseEvent response = handler.handleRequest(request, context);
 
         // Then
         assertNotNull(response);
@@ -112,12 +111,11 @@ class GoalCreationRequestHandlerTest {
         pathParameters.put("userId", "user123");
         pathParameters.put("name", "characterName");
 
-        ApiGatewayRequest request = ApiGatewayRequest.builder()
-                .pathParameters(pathParameters)
-                .build();
+        APIGatewayProxyRequestEvent request = new APIGatewayProxyRequestEvent()
+                .withPathParameters(pathParameters);
 
         // When
-        ApiGatewayResponse response = handler.handleRequest(request, context);
+        APIGatewayProxyResponseEvent response = handler.handleRequest(request, context);
 
         // Then
         assertNotNull(response);
@@ -131,13 +129,12 @@ class GoalCreationRequestHandlerTest {
         pathParameters.put("userId", "user123");
         pathParameters.put("name", "characterName");
 
-        ApiGatewayRequest request = ApiGatewayRequest.builder()
-                .pathParameters(pathParameters)
-                .body("invalid json")
-                .build();
+        APIGatewayProxyRequestEvent request = new APIGatewayProxyRequestEvent()
+                .withPathParameters(pathParameters)
+                .withBody("invalid json");
 
         // When
-        ApiGatewayResponse response = handler.handleRequest(request, context);
+        APIGatewayProxyResponseEvent response = handler.handleRequest(request, context);
 
         // Then
         assertNotNull(response);

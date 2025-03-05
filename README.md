@@ -61,7 +61,7 @@ GoalCreationRequestEvent event = GoalCreationRequestEvent.builder()
 
 ## Lambda Handlers
 
-### GoalCreationRequestHandler
+### GoalCreationRequestEventProducerHandler
 
 This Lambda handler is responsible for producing GoalCreationRequestEvents. It receives goal creation requests via API Gateway and publishes them as events.
 

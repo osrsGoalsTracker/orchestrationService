@@ -1,4 +1,4 @@
-package com.osrsGoalTracker.orchestration.handlers.model;
+package com.osrsGoalTracker.orchestration.handler.model.request;
 
 import java.time.Instant;
 
@@ -8,13 +8,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Model class representing the request body for goal creation.
+ * Model class representing the request body for goal creation event production.
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GoalCreationRequestBody {
+public class GoalCreationRequestEventProducerRequestBody {
     /**
      * The name of the skill or activity (e.g., "WOODCUTTING", "BOUNTY_HUNTER").
      */
