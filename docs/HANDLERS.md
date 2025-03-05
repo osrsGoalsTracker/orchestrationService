@@ -83,25 +83,21 @@ public class SomeHandler implements RequestHandler<APIGatewayProxyRequestEvent, 
 
 ### Orchestration Handlers
 
-#### GoalCreationEventHandler
-- **Source**: SQS Queue
-- **Package**: `com.osrsGoalTracker.orchestration.handlers.GoalCreationEventHandler`
-- **Event**: `GoalCreationEvent`
-- **Actions**: 
-  1. Updates notification preferences for the goal
-  2. Schedules initial progress check
-- **Example Event**:
+#### GoalCreationRequestHandler
+- **Path**: `POST /users/{userId}/characters/{name}/goals`
+- **Package**: `com.osrsGoalTracker.orchestration.handlers.GoalCreationRequestHandler`
+- **Request**: `GoalCreationRequestBody`
+- **Response**: `APIGatewayProxyResponseEvent` with success message
+- **Example Request**:
 ```json
 {
-    "userId": "user123",
-    "characterName": "playerName",
     "targetAttribute": "WOODCUTTING",
-    "targetType": "xp",
+    "targetType": "SKILL",
     "targetValue": 13034431,
     "currentValue": 1000000,
-    "targetDate": "2024-12-31",
+    "targetDate": "2024-12-31T23:59:59Z",
     "notificationChannelType": "DISCORD",
-    "frequency": "daily"
+    "frequency": "DAILY"
 }
 ```
 

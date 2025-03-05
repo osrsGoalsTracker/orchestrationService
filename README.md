@@ -61,9 +61,47 @@ GoalCreationRequestEvent event = GoalCreationRequestEvent.builder()
 
 ## Lambda Handlers
 
-### GoalCreationRequestEventProducer
+### GoalCreationRequestHandler
 
-This Lambda handler is responsible for producing GoalCreationRequestEvents. It receives goal creation requests and publishes them as events.
+This Lambda handler is responsible for producing GoalCreationRequestEvents. It receives goal creation requests via API Gateway and publishes them as events.
+
+#### API Gateway Request Format
+
+```json
+{
+  "pathParameters": {
+    "userId": "user123",
+    "name": "characterName"
+  },
+  "body": "{\"targetAttribute\":\"WOODCUTTING\",\"targetType\":\"SKILL\",\"targetValue\":99,\"currentValue\":1,\"targetDate\":\"2024-12-31T23:59:59Z\",\"notificationChannelType\":\"EMAIL\",\"frequency\":\"DAILY\"}"
+}
+```
+
+#### API Gateway Response Format
+
+Success (HTTP 200):
+```json
+{
+  "statusCode": 200,
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"message\":\"Goal creation request received successfully\"}",
+  "isBase64Encoded": false
+}
+```
+
+Error (HTTP 4xx/5xx):
+```json
+{
+  "statusCode": 400,
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"error\":\"Error message\"}",
+  "isBase64Encoded": false
+}
+```
 
 ## Versioning
 

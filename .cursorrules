@@ -18,6 +18,7 @@
 - Ensure the docs in docs/ are up to date when you make changes to the code.
 - Ensure the tests in docs/SERVICES.md are up to date when you make changes to the service interface.
 - String comparison should be done using the equalsIgnoreCase method.
+- When writing a new handler, always follow the guidelines in HANDLER_IMPLEMENTATION_GUIDELINES.md
 - Follow the following service architecture:
 
 ```

@@ -22,7 +22,7 @@ java {
 
 repositories {
     mavenCentral()
-    maven { url 'https://jitpack.io' }
+    maven { url = uri('https://jitpack.io') }
 }
 
 configurations {
@@ -206,8 +206,8 @@ task checkGitHooks {
 
 // Lambda handler configurations
 def lambdaHandlers = [
-    'GoalCreationRequestEventProducerLambda': [
-        handler: 'com.osrsGoalTracker.orchestration.handlers.GoalCreationRequestEventProducerLambda',
+    'GoalCreationRequestHandler': [
+        handler: 'com.osrsGoalTracker.orchestration.handlers.GoalCreationRequestHandler',
         description: 'Lambda handler for producing GoalCreationRequestEvents'
     ]
 ]
