@@ -184,7 +184,7 @@ task checkGitHooks {
             println "Git hooks not found or not executable. Installing them now..."
 
             if (!installScript.exists()) {
-                throw new GradleException("Cannot find scripts/install-hooks.sh")
+                throw new org.gradle.api.GradleException("Cannot find scripts/install-hooks.sh")
             }
 
             // Make the install script executable
@@ -198,14 +198,19 @@ task checkGitHooks {
             }
 
             if (result.exitValue != 0) {
-                throw new GradleException("Failed to install git hooks")
+                throw new org.gradle.api.GradleException("Failed to install git hooks")
             }
         }
     }
 }
 
 // Lambda handler configurations
-def lambdaHandlers = []
+def lambdaHandlers = [
+    'GoalCreationRequestEventProducerLambda': [
+        handler: 'com.osrsGoalTracker.orchestration.handlers.GoalCreationRequestEventProducerLambda',
+        description: 'Lambda handler for producing GoalCreationRequestEvents'
+    ]
+]
 
 // Create tasks for each Lambda handler
 def handlerTasks = []

@@ -59,6 +59,12 @@ GoalCreationRequestEvent event = GoalCreationRequestEvent.builder()
     .build();
 ```
 
+## Lambda Handlers
+
+### GoalCreationRequestEventProducer
+
+This Lambda handler is responsible for producing GoalCreationRequestEvents. It receives goal creation requests and publishes them as events.
+
 ## Versioning
 
 We use semantic versioning (MAJOR.MINOR.PATCH). Check the [releases page](https://github.com/osrsGoalsTracker/orchestrationService/releases) for the latest version.
