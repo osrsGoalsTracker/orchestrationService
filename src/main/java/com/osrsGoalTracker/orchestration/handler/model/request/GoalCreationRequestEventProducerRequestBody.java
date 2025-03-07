@@ -2,6 +2,7 @@ package com.osrsGoalTracker.orchestration.handler.model.request;
 
 import java.time.Instant;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class GoalCreationRequestEventProducerRequestBody {
     /**
      * The name of the skill or activity (e.g., "WOODCUTTING", "BOUNTY_HUNTER").

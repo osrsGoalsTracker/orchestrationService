@@ -5,6 +5,7 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.inject.Guice;
@@ -12,8 +13,6 @@ import com.google.inject.Injector;
 import com.osrsGoalTracker.orchestration.di.GoalCreationRequestEventProducerModule;
 import com.osrsGoalTracker.orchestration.events.GoalCreationRequestEvent;
 import com.osrsGoalTracker.orchestration.handler.model.request.GoalCreationRequestEventProducerRequestBody;
-import com.osrsGoalTracker.orchestration.handler.model.response.ErrorResponse;
-import com.osrsGoalTracker.orchestration.handler.model.response.GoalCreationRequestEventProducerResponse;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.HashMap;
@@ -32,7 +31,9 @@ import static java.net.HttpURLConnection.HTTP_OK;
 public class GoalCreationRequestEventProducerHandler
         implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(new JavaTimeModule());
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+            .registerModule(new JavaTimeModule())
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     private final Injector injector;
 
     /**
@@ -230,10 +231,7 @@ public class GoalCreationRequestEventProducerHandler
 
         String responseBody;
         try {
-            GoalCreationRequestEventProducerResponse response = GoalCreationRequestEventProducerResponse.builder()
-                    .message(message)
-                    .build();
-            responseBody = OBJECT_MAPPER.writeValueAsString(response);
+            responseBody = OBJECT_MAPPER.writeValueAsString(Map.of("message", message));
         } catch (JsonProcessingException e) {
             log.error("Failed to serialize response body: {}", e.getMessage(), e);
             responseBody = "{\"message\":\"" + message + "\"}";
@@ -259,10 +257,7 @@ public class GoalCreationRequestEventProducerHandler
 
         String responseBody;
         try {
-            ErrorResponse errorResponse = ErrorResponse.builder()
-                    .error(message)
-                    .build();
-            responseBody = OBJECT_MAPPER.writeValueAsString(errorResponse);
+            responseBody = OBJECT_MAPPER.writeValueAsString(Map.of("error", message));
         } catch (JsonProcessingException e) {
             log.error("Failed to serialize error response body: {}", e.getMessage(), e);
             responseBody = "{\"error\":\"" + message + "\"}";

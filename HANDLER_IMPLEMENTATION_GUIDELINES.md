@@ -87,3 +87,15 @@
 - Mock service dependencies
 - Test both success and error scenarios
 - Test input validation thoroughly
+
+### 7. Jar names
+In `build.gradle`, the jar name should be camelcase and without the "handler" suffix like:
+
+```
+def lambdaHandlers = [
+    'goalCreationRequestEventProducer': [
+        handler: 'com.osrsGoalTracker.orchestration.handler.GoalCreationRequestEventProducerHandler',
+        description: 'Lambda handler for producing GoalCreationRequestEvents'
+    ]
+]
+```

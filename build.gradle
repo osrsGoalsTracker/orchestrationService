@@ -206,7 +206,7 @@ task checkGitHooks {
 
 // Lambda handler configurations
 def lambdaHandlers = [
-    'GoalCreationRequestEventProducerHandler': [
+    'goalCreationRequestEventProducer': [
         handler: 'com.osrsGoalTracker.orchestration.handler.GoalCreationRequestEventProducerHandler',
         description: 'Lambda handler for producing GoalCreationRequestEvents'
     ]
