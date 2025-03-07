@@ -46,6 +46,9 @@ dependencies {
     // AWS Lambda
     implementation 'com.amazonaws:aws-lambda-java-core:1.2.3'
     implementation 'com.amazonaws:aws-lambda-java-events:3.11.4'
+
+    // AWS EventBridge
+    implementation 'com.amazonaws:aws-java-sdk-eventbridge:1.12.400'
     
     // Guice
     implementation 'com.google.inject:guice:7.0.0'

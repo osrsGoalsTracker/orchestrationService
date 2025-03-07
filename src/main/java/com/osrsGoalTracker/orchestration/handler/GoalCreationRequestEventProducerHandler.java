@@ -1,5 +1,8 @@
 package com.osrsGoalTracker.orchestration.handler;
 
+import com.amazonaws.services.eventbridge.AmazonEventBridge;
+import com.amazonaws.services.eventbridge.model.PutEventsRequest;
+import com.amazonaws.services.eventbridge.model.PutEventsRequestEntry;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
@@ -14,7 +17,7 @@ import com.osrsGoalTracker.orchestration.di.GoalCreationRequestEventProducerModu
 import com.osrsGoalTracker.orchestration.events.GoalCreationRequestEvent;
 import com.osrsGoalTracker.orchestration.handler.model.request.GoalCreationRequestEventProducerRequestBody;
 import lombok.extern.log4j.Log4j2;
-
+import com.osrsGoalTracker.orchestration.util.EnvUtil;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,12 +38,16 @@ public class GoalCreationRequestEventProducerHandler
             .registerModule(new JavaTimeModule())
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     private final Injector injector;
+    private final AmazonEventBridge eventBridge;
+    private final EnvUtil envUtil;
 
     /**
      * Default constructor for AWS Lambda.
      */
     public GoalCreationRequestEventProducerHandler() {
         this.injector = Guice.createInjector(new GoalCreationRequestEventProducerModule());
+        this.eventBridge = injector.getInstance(AmazonEventBridge.class);
+        this.envUtil = injector.getInstance(EnvUtil.class);
         log.info("GoalCreationRequestEventProducerHandler initialized");
     }
 
@@ -49,8 +56,10 @@ public class GoalCreationRequestEventProducerHandler
      *
      * @param injector The Guice injector
      */
-    public GoalCreationRequestEventProducerHandler(Injector injector) {
+    public GoalCreationRequestEventProducerHandler(Injector injector, AmazonEventBridge eventBridge, EnvUtil envUtil) {
         this.injector = injector;
+        this.eventBridge = eventBridge;
+        this.envUtil = envUtil;
         log.info("GoalCreationRequestEventProducerHandler initialized with injector");
     }
 
@@ -70,7 +79,11 @@ public class GoalCreationRequestEventProducerHandler
             GoalCreationRequestEvent event = parseAndValidateInput(request);
 
             // Step 2: Execute business logic
-            executeBusinessLogic(event);
+            eventBridge.putEvents(new PutEventsRequest()
+                    .withEntries(new PutEventsRequestEntry()
+                            .withDetail(event.toString())
+                            .withDetailType(envUtil.getEnvVariable("GOAL_CREATION_REQUEST_EVENT_DETAIL_TYPE"))
+                            .withSource("com.osrsGoalTracker.orchestration")));
 
             // Step 3: Create and return response
             return createSuccessResponse("Goal creation request received successfully");
