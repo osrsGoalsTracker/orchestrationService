@@ -1,5 +1,12 @@
 package com.osrsGoalTracker.orchestration.handler;
 
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_OK;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import com.amazonaws.services.eventbridge.AmazonEventBridge;
 import com.amazonaws.services.eventbridge.model.PutEventsRequest;
 import com.amazonaws.services.eventbridge.model.PutEventsRequestEntry;
@@ -16,14 +23,9 @@ import com.google.inject.Injector;
 import com.osrsGoalTracker.orchestration.di.GoalCreationRequestEventProducerModule;
 import com.osrsGoalTracker.orchestration.events.GoalCreationRequestEvent;
 import com.osrsGoalTracker.orchestration.handler.model.request.GoalCreationRequestEventProducerRequestBody;
-import lombok.extern.log4j.Log4j2;
 import com.osrsGoalTracker.orchestration.util.EnvUtil;
-import java.util.HashMap;
-import java.util.Map;
 
-import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_OK;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Lambda handler for producing GoalCreationRequestEvents.
@@ -52,9 +54,11 @@ public class GoalCreationRequestEventProducerHandler
     }
 
     /**
-     * Constructor with injector for testing.
-     *
-     * @param injector The Guice injector
+     * Constructor with dependencies for testing.
+     * 
+     * @param injector    The Guice injector for dependency injection
+     * @param eventBridge The EventBridge client for publishing events
+     * @param envUtil     The utility for accessing environment variables
      */
     public GoalCreationRequestEventProducerHandler(Injector injector, AmazonEventBridge eventBridge, EnvUtil envUtil) {
         this.injector = injector;
@@ -79,11 +83,26 @@ public class GoalCreationRequestEventProducerHandler
             GoalCreationRequestEvent event = parseAndValidateInput(request);
 
             // Step 2: Execute business logic
+
+            String detailType = envUtil.getEnvVariable("GOAL_CREATION_REQUEST_EVENT_DETAIL_TYPE");
+            String eventBusName = envUtil.getEnvVariable("EVENT_BUS_NAME");
+            String eventDetail = OBJECT_MAPPER.writeValueAsString(event);
+
+            log.info("Event Detail Type: {}", detailType);
+            log.info("Event Bus Name: {}", eventBusName);
+            log.info("Event Detail: {}", eventDetail);
+
+            PutEventsRequestEntry eventEntry = new PutEventsRequestEntry()
+                    .withDetail(eventDetail)
+                    .withDetailType(detailType)
+                    .withEventBusName(eventBusName)
+                    .withSource("com.osrsGoalTracker.orchestration");
+
+            log.info("Event Entry: {}", eventEntry);
+
+            // Step 4: Send the message
             eventBridge.putEvents(new PutEventsRequest()
-                    .withEntries(new PutEventsRequestEntry()
-                            .withDetail(event.toString())
-                            .withDetailType(envUtil.getEnvVariable("GOAL_CREATION_REQUEST_EVENT_DETAIL_TYPE"))
-                            .withSource("com.osrsGoalTracker.orchestration")));
+                    .withEntries(eventEntry));
 
             // Step 3: Create and return response
             return createSuccessResponse("Goal creation request received successfully");
