@@ -24,7 +24,7 @@
 ```
 # Layered Architecture Rule Set
 
-This rule set defines how to organize and implement a modular layered architecture for a product, including both domain services (e.g., `UserService`, `CharacterService`) and orchestration Lambdas for event-driven workflows. It outlines layers, interaction rules, service boundaries, and specific patterns to handle cross-cutting concerns like events and shared resources.
+This rule set defines how to organize and implement a modular layered architecture
 
 ---
 
@@ -32,22 +32,10 @@ This rule set defines how to organize and implement a modular layered architectu
 
 ### Layer Definitions
 
-#### Domain Layer (Service-Specific)
-
-Each domain (e.g., `User`, `Character`, `Goal`) has its own service responsible for managing the business logic and data access for its entities. It is structured into three sub-layers:
-
 1. **Handler Layer**
    - Contains entry points for APIs (e.g., Lambda handlers or controllers).
-   - Handles input (e.g., HTTP requests or events) and delegates logic to the service layer.
-   - Only calls the service layer.
-
-4. ** External layer**
-   - Responsible for managing communication with third-party systems, APIs, or services. This layer:
-   - Abstracts details like HTTP request/response formats, authentication, and API endpoints.
-   - Provides a clean and reusable interface for external communication.
-   - Decouples external systems from domain logic.
-   - Calls no other layers other than common layer.
-   - never leaks external system details to other layers. E.g for an AmazonEventBridge client, no EventBridge models or details should be leaked to other layers.
+   - Handles input (e.g., HTTP requests or events) and logic.
+   - Only calls the common layer.
 
 5. **Common Layer**
    - Contains reusable components across domains:
@@ -59,13 +47,7 @@ Each domain (e.g., `User`, `Character`, `Goal`) has its own service responsible 
 ### Rules for Inter-Layer Interaction
 
 1. **Handler Layer**
-   - Allowed to call: Service layer.
-   - Not allowed to call directly: External layer layer or shared utilities.
-
-4. **External Layer**
-   - Allowed to call: external systems via interfaces, utils
-   - Not allowed to call directly: handlers layer.
-
+   - Allowed to call: common layer
 ---
 
 ### Example Tree Structure: Deep Dive into CharacterService
@@ -86,8 +68,4 @@ src/
 │   │   │   │   │   │   ├── CreateCharacterResponse.java
 │   │   │   │   │   ├── di/
 │   │   │   │   │   │   ├── CharacterModule.java
-│   │   │   │   │   ├── external/
-│   │   │   │   │   │   ├── IEventBus.java
-│   │   │   │   │   │   ├── impl/
-│   │   │   │   │   │   │   ├── EventBusImpl.java
 ```
